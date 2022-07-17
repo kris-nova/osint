@@ -1,0 +1,41 @@
+#!/bin/bash
+# =========================================================================== #
+#            MIT License Copyright (c) 2022 Kris Nóva <kris@nivenly.com>      #
+#                                                                             #
+#                 ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓                 #
+#                 ┃   ███╗   ██╗ ██████╗ ██╗   ██╗ █████╗   ┃                 #
+#                 ┃   ████╗  ██║██╔═████╗██║   ██║██╔══██╗  ┃                 #
+#                 ┃   ██╔██╗ ██║██║██╔██║██║   ██║███████║  ┃                 #
+#                 ┃   ██║╚██╗██║████╔╝██║╚██╗ ██╔╝██╔══██║  ┃                 #
+#                 ┃   ██║ ╚████║╚██████╔╝ ╚████╔╝ ██║  ██║  ┃                 #
+#                 ┃   ╚═╝  ╚═══╝ ╚═════╝   ╚═══╝  ╚═╝  ╚═╝  ┃                 #
+#                 ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛                 #
+#                                                                             #
+#                        This machine kills fascists.                         #
+#                                                                             #
+# =========================================================================== #
+
+
+if [ -z "$1" ]; then
+    echo "Usage: nmap TARGET"
+    exit 1
+fi 
+
+
+# Requires "vulscan" to scan for vulnerabilities
+#
+# pacaur -S vulscan-git 
+
+# -O    Enables OS detectionA
+# -sV   Enables version detection
+# -sS   TCP SYN/Connect()/ACK/Window/Maimon scans
+# --script=vulscan Enables vulscan script
+
+DATE=$(date '+%Y-%m-%d')
+TARGET=$@ # Pass all arguments for good measure
+
+sudo -E nmap -O $TARGET | tee out/$1-$DATE.nmap.osscan &
+sudo -E nmap $TARGET | tee out/$1-$DATE.nmap.ports &
+sudo -E nmap -sV -sS -d --script=vulscan/vulscan.nse $TARGET | tee out/$1-$DATE.nmap.full
+
+
