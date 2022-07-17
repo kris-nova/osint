@@ -14,6 +14,16 @@
 #                        This machine kills fascists.                         #
 #                                                                             #
 # =========================================================================== #
+#
+#
+# Novamap is my own personal nmap wrapper.
+#
+# Use it just like you would use nmap, however it will run a handful of my
+# favorite scans against a target.
+#
+# Useful to grab a quick fingerprint of a remote target for any lawful open
+# source intelligence purposes.
+#
 
 
 if [ -z "$1" ]; then
@@ -21,11 +31,9 @@ if [ -z "$1" ]; then
     exit 1
 fi 
 
-
 # Requires "vulscan" to scan for vulnerabilities
 #
 # pacaur -S vulscan-git 
-
 # -O    Enables OS detectionA
 # -sV   Enables version detection
 # -sS   TCP SYN/Connect()/ACK/Window/Maimon scans
@@ -34,8 +42,17 @@ fi
 DATE=$(date '+%Y-%m-%d')
 TARGET=$@ # Pass all arguments for good measure
 
+# Operating System Scan
 sudo -E nmap -O $TARGET | tee out/$1-$DATE.nmap.osscan &
+
+# Regular Port Scan
 sudo -E nmap $TARGET | tee out/$1-$DATE.nmap.ports &
-sudo -E nmap -sV -sS -d --script=vulscan/vulscan.nse $TARGET | tee out/$1-$DATE.nmap.full
 
+# HTTP 
+sudo -E nmap --script=http-headers $TARGET | tee out/$1-$DATE.nmap.http &
 
+# Common Scripts
+sudo -E nmap -sC $TARGET | tee out/$1-$DATE.nmap.common &
+
+# Vulnerability (CVE) Scan
+sudo -E nmap -sV -sS --script=vulscan/vulscan.nse $TARGET | tee out/$1-$DATE.nmap.vuln
