@@ -23,11 +23,9 @@
 #
 # Useful to grab a quick fingerprint of a remote target for any lawful open
 # source intelligence purposes.
-#
-
 
 if [ -z "$1" ]; then
-    echo "Usage: nmap TARGET"
+    echo "Usage: novamap TARGET"
     exit 1
 fi 
 
