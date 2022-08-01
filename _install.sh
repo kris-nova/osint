@@ -1,3 +1,4 @@
+#!/bin/bash
 # =========================================================================== #
 #            MIT License Copyright (c) 2022 Kris Nóva <kris@nivenly.com>      #
 #                                                                             #
@@ -14,15 +15,5 @@
 #                                                                             #
 # =========================================================================== #
 
-default: help
+# Tool installer
 
-clean: ## Clean your artifacts 🧼
-	@echo "Cleaning..."
-	rm -rvf out/*
-
-tools: ## Install tools
-	./_install.sh
-
-.PHONY: help
-help:  ## 🤔 Show help messages for make targets
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[32m%-30s\033[0m %s\n", $$1, $$2}'
